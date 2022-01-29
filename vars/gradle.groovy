@@ -56,7 +56,7 @@ def call(){
         }
 }
 
-def stageRun{
+def stageRun(){
         stage('Run') {
                         STAGE = env.STAGE_NAME
                         println "Stage: ${env.STAGE_NAME}"
