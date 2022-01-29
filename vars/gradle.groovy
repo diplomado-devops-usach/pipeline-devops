@@ -56,4 +56,13 @@ def call(){
         }
 }
 
+def stageRun{
+        stage('Run') {
+                        STAGE = env.STAGE_NAME
+                        println "Stage: ${env.STAGE_NAME}"
+                        sh "gradle bootRun &"
+                        sleep 20
+        }
+}
+
 return this;
