@@ -14,10 +14,12 @@ def call(){
 	
 	environment {
 	    STAGE = ''
+	    STAGE_ER_MSG = ''
 	}
 	
 	parameters {
 		choice choices: ['gradle', 'maven'], description: 'Indique la herramienta de construcción', name: 'buildTool'
+		string name: 'stages', defaultValue: '', description: 'Stages a ejecutar', trim:true
 	}
 
     stages {
@@ -26,7 +28,12 @@ def call(){
                 println "Pipeline"
 				script{				
 					if (params.buildTool == 'gradle'){
-						gradle()
+						if(params.stages == ''){
+							gradle()
+						}
+						else{
+							gradle.run()
+						}
 					}
 					else{
 						maven()
