@@ -6,24 +6,7 @@
 	ejecucion.call()
 
 */
-
-stgsToProc = [:]
-map = [:]
-gradleMap = [1:[name:'build', priority:1, dependencies:null],
-           2:[name:'sonar', priority:2, dependencies:'build'],
-           3:[name:'run', priority:3, dependencies:'build'],
-           4:[name:'testapp', priority:4, dependencies:'run'],
-           5:[name:'nexus', priority:5, dependencies:'build']]
-
-mavenMap = [1:[name:'build', priority:1, dependencies:null],
-           2:[name:'sonar', priority:2, dependencies:'build'],
-           3:[name:'run', priority:3, dependencies:'build'],
-           4:[name:'testapp', priority:4, dependencies:'run'],
-           5:[name:'nexus', priority:5, dependencies:'build'],
-           6:[name:'testapp', priority:4, dependencies:'run'],
-           7:[name:'nexus', priority:5, dependencies:'build']]		  
-
-def addStage(stagesStr){
+def addStage(stagesStr,map){
     def stagesList = stagesStr.split(',')
     for(int i = 0;i<stagesList.length;i++){
         def stage = map.find { it.value.name == stagesList[i]}
@@ -113,6 +96,20 @@ def call(){
 		environment {
 			STAGE = ''
 			STAGE_ERR_MSG = ''
+			stgsToProc = [:]
+			map = [:]
+			gradleMap = [1:[name:'build', priority:1, dependencies:null],
+						   2:[name:'sonar', priority:2, dependencies:'build'],
+						   3:[name:'run', priority:3, dependencies:'build'],
+						   4:[name:'testapp', priority:4, dependencies:'run'],
+						   5:[name:'nexus', priority:5, dependencies:'build']]
+			mavenMap = [1:[name:'build', priority:1, dependencies:null],
+						   2:[name:'sonar', priority:2, dependencies:'build'],
+						   3:[name:'run', priority:3, dependencies:'build'],
+						   4:[name:'testapp', priority:4, dependencies:'run'],
+						   5:[name:'nexus', priority:5, dependencies:'build'],
+						   6:[name:'testapp', priority:4, dependencies:'run'],
+						   7:[name:'nexus', priority:5, dependencies:'build']]
 		}
 		
 		parameters {
@@ -130,8 +127,7 @@ def call(){
 								gradle()
 							}
 							else{
-								map = gradleMap
-								runGradleStages(params.stages)
+								runGradleStages(params.stages,$gradleMap)
 							}
 						}
 						else{
@@ -139,8 +135,7 @@ def call(){
 								maven()
 							}
 							else{
-								map = mavenMap
-								runMavenStages(params.stages)
+								runMavenStages(params.stages,$mavenMap)
 							}
 						}
 					}
