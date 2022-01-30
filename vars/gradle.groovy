@@ -4,6 +4,12 @@
 	ejecucion.call()
 */
 
+def gradleMap = [1:[name:'build', priority:1, dependencies:null],
+				   2:[name:'sonar', priority:2, dependencies:'build'],
+				   3:[name:'run', priority:3, dependencies:'build'],
+				   4:[name:'testapp', priority:4, dependencies:'run'],
+				   5:[name:'nexus', priority:5, dependencies:'build']]
+
 def call(){
   
 	stage('Build & Unit Test') {

@@ -54,12 +54,7 @@ def call(){
 								gradle()
 							}
 							else{
-								def gradleMap = [1:[name:'build', priority:1, dependencies:null],
-											   2:[name:'sonar', priority:2, dependencies:'build'],
-											   3:[name:'run', priority:3, dependencies:'build'],
-											   4:[name:'testapp', priority:4, dependencies:'run'],
-											   5:[name:'nexus', priority:5, dependencies:'build']]
-								gradle.runGradleStages(params.stages,gradleMap)
+								gradle.runGradleStages(params.stages)
 							}
 						}
 						else{
@@ -67,14 +62,7 @@ def call(){
 								maven()
 							}
 							else{
-								def mavenMap = [1:[name:'build', priority:1, dependencies:null],
-											   2:[name:'sonar', priority:2, dependencies:'build'],
-											   3:[name:'run', priority:3, dependencies:'build'],
-											   4:[name:'testapp', priority:4, dependencies:'run'],
-											   5:[name:'nexus', priority:5, dependencies:'build'],
-											   6:[name:'testapp', priority:4, dependencies:'run'],
-											   7:[name:'nexus', priority:5, dependencies:'build']]
-								maven.runMavenStages(params.stages,mavenMap)
+								maven.runMavenStages(params.stages)
 							}
 						}
 					}

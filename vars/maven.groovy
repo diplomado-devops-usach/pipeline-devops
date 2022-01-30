@@ -4,6 +4,14 @@
 	ejecucion.call()
 */
 
+def mavenMap = [1:[name:'build', priority:1, dependencies:null],
+				   2:[name:'sonar', priority:2, dependencies:'build'],
+				   3:[name:'run', priority:3, dependencies:'build'],
+				   4:[name:'testapp', priority:4, dependencies:'run'],
+				   5:[name:'nexus', priority:5, dependencies:'build'],
+				   6:[name:'testapp', priority:4, dependencies:'run'],
+				   7:[name:'nexus', priority:5, dependencies:'build']]
+
 def call(){
 
 	stage('Compile') {
@@ -114,33 +122,33 @@ def stageNexus(){
 }
 
 def runMavenStages(stages){
-							map = mavenMap
-							addStage(stages)
-							def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
-							keyS.each {
-								def stageName = stgsToProc.get(it).name
-								switch(stageName) {
-									case "build":
-										println "m build: ${stageName}"
-										break
-									case "sonar":
-										println "m sonar: ${stageName}"
-										break
-									case "run":
-										println "m run: ${stageName}"
-										break
-									case "testapp":
-										println "m testapp: ${stageName}"
-										break
-									case "nexus":
-										println "m nexus: ${stageName}"
-										break
-									default:
-										STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-										println STAGE_ERR_MSG
-										break
-								}
-							}
-						}
+	map = mavenMap
+	addStage(stages)
+	def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
+	keyS.each {
+		def stageName = stgsToProc.get(it).name
+		switch(stageName) {
+			case "build":
+				println "m build: ${stageName}"
+				break
+			case "sonar":
+				println "m sonar: ${stageName}"
+				break
+			case "run":
+				println "m run: ${stageName}"
+				break
+			case "testapp":
+				println "m testapp: ${stageName}"
+				break
+			case "nexus":
+				println "m nexus: ${stageName}"
+				break
+			default:
+				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
+				println STAGE_ERR_MSG
+				break
+		}
+	}
+}
 
 return this;
