@@ -160,7 +160,7 @@ def addStage(stagesStr,map,stgsToProc){
 			if(!stgsToProc.containsKey(stage.key)){
 				stgsToProc.put(stage.key,stage.value)
 				if(stage.value.dependencies!=null)
-					addStage(stage.value.dependencies)
+					addStage(stage.value.dependencies,map,stgsToProc)
 			}
 			else{
 				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"

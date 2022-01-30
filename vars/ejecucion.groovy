@@ -32,7 +32,7 @@ def call(){
 								gradle()
 							}
 							else{
-								println(params.stages)
+								println("ejecucion: "+params.stages)
 								gradle.runGradleStages(params.stages)
 							}
 						}
