@@ -4,14 +4,6 @@
 	ejecucion.call()
 */
 
-mavenMap = [1:[name:'build', priority:1, dependencies:null],
-				   2:[name:'sonar', priority:2, dependencies:'build'],
-				   3:[name:'run', priority:3, dependencies:'build'],
-				   4:[name:'testapp', priority:4, dependencies:'run'],
-				   5:[name:'nexus', priority:5, dependencies:'build'],
-				   6:[name:'testapp', priority:4, dependencies:'run'],
-				   7:[name:'nexus', priority:5, dependencies:'build']]
-
 def call(){
 
 	stage('Compile') {
@@ -122,8 +114,15 @@ def stageNexus(){
 }
 
 def runMavenStages(stages){
-	def map = mavenMap
-	addStage(stages,map)
+	def map = [1:[name:'build', priority:1, dependencies:null],
+			   2:[name:'sonar', priority:2, dependencies:'build'],
+			   3:[name:'run', priority:3, dependencies:'build'],
+			   4:[name:'testapp', priority:4, dependencies:'run'],
+			   5:[name:'nexus', priority:5, dependencies:'build'],
+			   6:[name:'testapp', priority:4, dependencies:'run'],
+			   7:[name:'nexus', priority:5, dependencies:'build']]
+	stgsToProc = [:]
+	addStage(stages,map,stgsToProc)
 	def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
 	keyS.each {
 		def stageName = stgsToProc.get(it).name
@@ -151,7 +150,7 @@ def runMavenStages(stages){
 	}
 }
 
-def addStage(stagesStr,map){
+def addStage(stagesStr,map,stgsToProc){
 	def stagesList = stagesStr.split(',')
 	for(int i = 0;i<stagesList.length;i++){
 		def stage = map.find { it.value.name == stagesList[i]}
