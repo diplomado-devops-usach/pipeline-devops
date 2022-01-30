@@ -124,8 +124,8 @@ def runGradleStages(stages){
 			   5:[name:'nexus', priority:5, dependencies:'build']]
 	stgsToProc = [:]
 	addStage(stages,map,stgsToProc)
-	println(stgsToProc)
-	def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
+	def aux = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }
+	def keyS = aux.keySet()
 	keyS.each {
 		def stageName = stgsToProc.get(it).name
 		switch(stageName) {
