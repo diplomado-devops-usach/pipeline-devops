@@ -115,32 +115,45 @@ def stageNexus(){
 
 def runMavenStages(stages){
 	def map = [1:[name:'build', priority:1, dependencies:null],
-			   2:[name:'sonar', priority:2, dependencies:'build'],
-			   3:[name:'run', priority:3, dependencies:'build'],
-			   4:[name:'testapp', priority:4, dependencies:'run'],
-			   5:[name:'nexus', priority:5, dependencies:'build'],
+			   2:[name:'test', priority:2, dependencies:'build'],
+			   3:[name:'package', priority:3, dependencies:'build'],
+			   4:[name:'sonar', priority:4, dependencies:'run'],
+			   5:[name:'run', priority:5, dependencies:'build'],
 			   6:[name:'testapp', priority:4, dependencies:'run'],
 			   7:[name:'nexus', priority:5, dependencies:'build']]
-	stgsToProc = [:]
 	addStage(stages,map,stgsToProc)
-	def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
+	def aux = stgsToProc.sort()
+	def keyS = aux.keySet()
 	keyS.each {
 		def stageName = stgsToProc.get(it).name
 		switch(stageName) {
 			case "build":
 				println "m build: ${stageName}"
+				//stageBuild()
+				break
+			case "test":
+				println "m test: ${stageName}"
+				//stageTest()
+				break
+			case "package":
+				println "m package: ${stageName}"
+				//stagePackage()
 				break
 			case "sonar":
 				println "m sonar: ${stageName}"
+				//stageSonar()
 				break
 			case "run":
 				println "m run: ${stageName}"
+				//stageRun()
 				break
 			case "testapp":
 				println "m testapp: ${stageName}"
+				//stageTestApp()
 				break
 			case "nexus":
 				println "m nexus: ${stageName}"
+				//stageNexus()
 				break
 			default:
 				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
@@ -150,24 +163,24 @@ def runMavenStages(stages){
 	}
 }
 
-def addStage(stagesStr,map,stgsToProc){
+def addStage(stagesStr,map,stgMap){
 	def stagesList = stagesStr.split(',')
 	for(int i = 0;i<stagesList.length;i++){
 		def stage = map.find { it.value.name == stagesList[i]}
 		if(stage!=null){
-			if(!stgsToProc.containsKey(stage.key)){
-				stgsToProc.put(stage.key,stage.value)
+			if(!stgMap.containsKey(stage.key)){
+				stgMap.put(stage.key,stage.value)
 				if(stage.value.dependencies!=null)
-					addStage(stage.value.dependencies)
+					addStage(stage.value.dependencies,map,stgMap)
 			}
 			else{
-				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-				exit 0
+				println "Stage fue previamente agregada: $stage.key; $stage.value.name"
 			}
 		}
 		else{
 			STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-			exit 0
+			println STAGE_ERR_MSG
+			return 0
 		}
 	}
 }
