@@ -164,12 +164,14 @@ def addStage(stagesStr,map,stgMap){
 			}
 			else{
 				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-				exit 0
+				println STAGE_ERR_MSG
+				return 0
 			}
 		}
 		else{
 			STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-			exit 0
+			println STAGE_ERR_MSG
+			return 0
 		}
 	}
 }
