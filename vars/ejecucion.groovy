@@ -6,28 +6,6 @@
 	ejecucion.call()
 
 */
-def addStage(stagesStr,map){
-	def stagesList = stagesStr.split(',')
-	for(int i = 0;i<stagesList.length;i++){
-		def stage = map.find { it.value.name == stagesList[i]}
-		if(stage!=null){
-			if(!stgsToProc.containsKey(stage.key)){
-				stgsToProc.put(stage.key,stage.value)
-				if(stage.value.dependencies!=null)
-					addStage(stage.value.dependencies)
-			}
-			else{
-				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-				exit 0
-			}
-		}
-		else{
-			STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-			exit 0
-		}
-	}
-}
-
 def call(){
   
 	pipeline {

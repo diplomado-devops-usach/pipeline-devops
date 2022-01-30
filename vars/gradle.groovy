@@ -4,7 +4,7 @@
 	ejecucion.call()
 */
 
-def gradleMap = [1:[name:'build', priority:1, dependencies:null],
+gradleMap = [1:[name:'build', priority:1, dependencies:null],
 				   2:[name:'sonar', priority:2, dependencies:'build'],
 				   3:[name:'run', priority:3, dependencies:'build'],
 				   4:[name:'testapp', priority:4, dependencies:'run'],
@@ -122,8 +122,8 @@ def stageNexus(){
 }
 
 def runGradleStages(stages){
-	map = gradleMap
-	addStage(stages)
+	def map = gradleMap
+	addStage(stages,map)
 	def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
 	keyS.each {
 		def stageName = stgsToProc.get(it).name
@@ -147,6 +147,28 @@ def runGradleStages(stages){
 				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
 				println STAGE_ERR_MSG
 				break
+		}
+	}
+}
+
+def addStage(stagesStr,map){
+	def stagesList = stagesStr.split(',')
+	for(int i = 0;i<stagesList.length;i++){
+		def stage = map.find { it.value.name == stagesList[i]}
+		if(stage!=null){
+			if(!stgsToProc.containsKey(stage.key)){
+				stgsToProc.put(stage.key,stage.value)
+				if(stage.value.dependencies!=null)
+					addStage(stage.value.dependencies)
+			}
+			else{
+				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
+				exit 0
+			}
+		}
+		else{
+			STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
+			exit 0
 		}
 	}
 }
