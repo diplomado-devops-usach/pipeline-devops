@@ -124,8 +124,8 @@ def runGradleStages(stages){
 			   5:[name:'nexus', priority:5, dependencies:'build']]
 	stgsToProc = [:]
 	addStage(stages,map,stgsToProc)
-	def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
 	println(stgsToProc)
+	def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
 	keyS.each {
 		def stageName = stgsToProc.get(it).name
 		switch(stageName) {
@@ -152,15 +152,15 @@ def runGradleStages(stages){
 	}
 }
 
-def addStage(stagesStr,map,stgsToProc){
+def addStage(stagesStr,map,stgMap){
 	def stagesList = stagesStr.split(',')
 	for(int i = 0;i<stagesList.length;i++){
 		def stage = map.find { it.value.name == stagesList[i]}
 		if(stage!=null){
-			if(!stgsToProc.containsKey(stage.key)){
-				stgsToProc.put(stage.key,stage.value)
+			if(!stgMap.containsKey(stage.key)){
+				stgMap.put(stage.key,stage.value)
 				if(stage.value.dependencies!=null)
-					addStage(stage.value.dependencies,map,stgsToProc)
+					addStage(stage.value.dependencies,map,stgMap)
 			}
 			else{
 				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
