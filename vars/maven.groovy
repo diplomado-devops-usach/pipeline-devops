@@ -117,10 +117,10 @@ def runMavenStages(stages){
 	def map = [1:[name:'build', priority:1, dependencies:null],
 			   2:[name:'test', priority:2, dependencies:'build'],
 			   3:[name:'package', priority:3, dependencies:'build'],
-			   4:[name:'sonar', priority:4, dependencies:'run'],
-			   5:[name:'run', priority:5, dependencies:'build'],
-			   6:[name:'testapp', priority:4, dependencies:'run'],
-			   7:[name:'nexus', priority:5, dependencies:'build']]
+			   4:[name:'sonar', priority:4, dependencies:'package'],
+			   5:[name:'run', priority:5, dependencies:'package'],
+			   6:[name:'testapp', priority:0, dependencies:'run'],
+			   7:[name:'nexus', priority:7, dependencies:'package']]
 	addStage(stages,map,stgsToProc)
 	def aux = stgsToProc.sort()
 	def keyS = aux.keySet()
