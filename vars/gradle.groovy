@@ -126,6 +126,7 @@ def runGradleStages(stages){
 	addStage(stages,map,stgsToProc)
 	def aux = stgsToProc.sort() //{ a, b -> a.value.priority <=> b.value.priority }
 	def keyS = aux.keySet()
+	println keyS
 	keyS.each {
 		def stageName = stgsToProc.get(it).name
 		switch(stageName) {
@@ -157,10 +158,14 @@ def addStage(stagesStr,map,stgMap){
 	for(int i = 0;i<stagesList.length;i++){
 		def stage = map.find { it.value.name == stagesList[i]}
 		if(stage!=null){
-			if(!stgMap.containsKey(stage.key)){
-				stgMap.put(stage.key,stage.value)
-				if(stage.value.dependencies!=null)
-					addStage(stage.value.dependencies,map,stgMap)
+			if(!map.containsKey(stage.key)){
+				if(!stgMap.containsKey(stage.key)){
+					stgMap.put(stage.key,stage.value)
+					if(stage.value.dependencies!=null)
+						addStage(stage.value.dependencies,map,stgMap)
+					else
+						println "Stage ya fue agregada: $stage.key"
+				}
 			}
 			else{
 				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
