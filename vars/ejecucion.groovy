@@ -32,6 +32,7 @@ def call(){
 								gradle()
 							}
 							else{
+								println(params.stages)
 								gradle.runGradleStages(params.stages)
 							}
 						}
@@ -40,6 +41,7 @@ def call(){
 								maven()
 							}
 							else{
+								println(params.stages)
 								maven.runMavenStages(params.stages)
 							}
 						}
