@@ -157,16 +157,14 @@ def addStage(stagesStr,map,stgMap){
 	def stagesList = stagesStr.split(',')
 	for(int i = 0;i<stagesList.length;i++){
 		def stage = map.find { it.value.name == stagesList[i]}
-		println "str stage: $stagesList[i]; dato stage paso 1: $stage"
 		if(stage!=null){
-			println "dato stage paso 2: $stage.key"
 			if(!stgMap.containsKey(stage.key)){
 				stgMap.put(stage.key,stage.value)
 				if(stage.value.dependencies!=null)
 					addStage(stage.value.dependencies,map,stgMap)
 			}
 			else{
-				println "Stage fue previamente agregada: $stage.key"
+				println "Stage fue previamente agregada: $stage.key; $stage.value.name"
 			}
 		}
 		else{
