@@ -96,20 +96,6 @@ def call(){
 		environment {
 			STAGE = ''
 			STAGE_ERR_MSG = ''
-			stgsToProc = [:]
-			map = [:]
-			gradleMap = [1:[name:'build', priority:1, dependencies:null],
-						   2:[name:'sonar', priority:2, dependencies:'build'],
-						   3:[name:'run', priority:3, dependencies:'build'],
-						   4:[name:'testapp', priority:4, dependencies:'run'],
-						   5:[name:'nexus', priority:5, dependencies:'build']]
-			mavenMap = [1:[name:'build', priority:1, dependencies:null],
-						   2:[name:'sonar', priority:2, dependencies:'build'],
-						   3:[name:'run', priority:3, dependencies:'build'],
-						   4:[name:'testapp', priority:4, dependencies:'run'],
-						   5:[name:'nexus', priority:5, dependencies:'build'],
-						   6:[name:'testapp', priority:4, dependencies:'run'],
-						   7:[name:'nexus', priority:5, dependencies:'build']]
 		}
 		
 		parameters {
@@ -121,13 +107,19 @@ def call(){
 			stage('Pipeline') {
 				steps {
 					println "Pipeline"
-					script{				
+					script{	
+						stgsToProc = [:]
 						if (params.buildTool == 'gradle'){
 							if(params.stages == ''){
 								gradle()
 							}
 							else{
-								runGradleStages(params.stages,$gradleMap)
+								def gradleMap = [1:[name:'build', priority:1, dependencies:null],
+											   2:[name:'sonar', priority:2, dependencies:'build'],
+											   3:[name:'run', priority:3, dependencies:'build'],
+											   4:[name:'testapp', priority:4, dependencies:'run'],
+											   5:[name:'nexus', priority:5, dependencies:'build']]
+								runGradleStages(params.stages,gradleMap)
 							}
 						}
 						else{
@@ -135,7 +127,14 @@ def call(){
 								maven()
 							}
 							else{
-								runMavenStages(params.stages,$mavenMap)
+								def mavenMap = [1:[name:'build', priority:1, dependencies:null],
+											   2:[name:'sonar', priority:2, dependencies:'build'],
+											   3:[name:'run', priority:3, dependencies:'build'],
+											   4:[name:'testapp', priority:4, dependencies:'run'],
+											   5:[name:'nexus', priority:5, dependencies:'build'],
+											   6:[name:'testapp', priority:4, dependencies:'run'],
+											   7:[name:'nexus', priority:5, dependencies:'build']]
+								runMavenStages(params.stages,mavenMap)
 							}
 						}
 					}
