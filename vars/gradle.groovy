@@ -126,24 +126,28 @@ def runGradleStages(stages){
 	addStage(stages,map,stgsToProc)
 	def aux = stgsToProc.sort() //{ a, b -> a.value.priority <=> b.value.priority }
 	def keyS = aux.keySet()
-	println keyS
 	keyS.each {
 		def stageName = stgsToProc.get(it).name
 		switch(stageName) {
 			case "build":
 				println "g build: ${stageName}"
+				stageBuild()
 				break
 			case "sonar":
 				println "g sonar: ${stageName}"
+				stageSonar()
 				break
 			case "run":
 				println "g run: ${stageName}"
+				stageRun()
 				break
 			case "testapp":
 				println "g testapp: ${stageName}"
+				stageTestApp()
 				break
 			case "nexus":
 				println "g nexus: ${stageName}"
+				stageNexus()
 				break
 			default:
 				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
