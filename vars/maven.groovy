@@ -113,4 +113,34 @@ def stageNexus(){
 	}
 }
 
+def runMavenStages(stages){
+							map = mavenMap
+							addStage(stages)
+							def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
+							keyS.each {
+								def stageName = stgsToProc.get(it).name
+								switch(stageName) {
+									case "build":
+										println "m build: ${stageName}"
+										break
+									case "sonar":
+										println "m sonar: ${stageName}"
+										break
+									case "run":
+										println "m run: ${stageName}"
+										break
+									case "testapp":
+										println "m testapp: ${stageName}"
+										break
+									case "nexus":
+										println "m nexus: ${stageName}"
+										break
+									default:
+										STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
+										println STAGE_ERR_MSG
+										break
+								}
+							}
+						}
+
 return this;

@@ -115,4 +115,34 @@ def stageNexus(){
 	}
 }
 
+def runGradleStages(stages){
+	map = gradleMap
+	addStage(stages)
+	def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
+	keyS.each {
+		def stageName = stgsToProc.get(it).name
+		switch(stageName) {
+			case "build":
+				println "g build: ${stageName}"
+				break
+			case "sonar":
+				println "g sonar: ${stageName}"
+				break
+			case "run":
+				println "g run: ${stageName}"
+				break
+			case "testapp":
+				println "g testapp: ${stageName}"
+				break
+			case "nexus":
+				println "g nexus: ${stageName}"
+				break
+			default:
+				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
+				println STAGE_ERR_MSG
+				break
+		}
+	}
+}
+
 return this;
