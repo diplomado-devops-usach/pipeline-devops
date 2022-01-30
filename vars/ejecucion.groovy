@@ -6,88 +6,6 @@
 	ejecucion.call()
 
 */
-def addStage(stagesStr,map){
-    def stagesList = stagesStr.split(',')
-    for(int i = 0;i<stagesList.length;i++){
-        def stage = map.find { it.value.name == stagesList[i]}
-        if(stage!=null){
-            if(!stgsToProc.containsKey(stage.key)){
-                stgsToProc.put(stage.key,stage.value)
-                if(stage.value.dependencies!=null)
-                    addStage(stage.value.dependencies)
-            }
-            else{
-                STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-                exit 0
-            }
-        }
-        else{
-            STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-            exit 0
-        }
-    }
-}
-
-def runGradleStages(stages){
-    map = gradleMap
-    addStage(stages)
-    def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
-    keyS.each {
-        def stageName = stgsToProc.get(it).name
-        switch(stageName) {
-            case "build":
-                println "g build: ${stageName}"
-                break
-            case "sonar":
-                println "g sonar: ${stageName}"
-                break
-            case "run":
-                println "g run: ${stageName}"
-                break
-            case "testapp":
-                println "g testapp: ${stageName}"
-                break
-            case "nexus":
-                println "g nexus: ${stageName}"
-                break
-            default:
-                STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-                println STAGE_ERR_MSG
-                break
-        }
-    }
-}
-
-def runMavenStages(stages){
-    map = mavenMap
-    addStage(stages)
-    def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
-    keyS.each {
-        def stageName = stgsToProc.get(it).name
-        switch(stageName) {
-            case "build":
-                println "m build: ${stageName}"
-                break
-            case "sonar":
-                println "m sonar: ${stageName}"
-                break
-            case "run":
-                println "m run: ${stageName}"
-                break
-            case "testapp":
-                println "m testapp: ${stageName}"
-                break
-            case "nexus":
-                println "m nexus: ${stageName}"
-                break
-            default:
-                STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
-                println STAGE_ERR_MSG
-                break
-        }
-    }
-}
-
 def call(){
   
 	pipeline {
@@ -107,7 +25,88 @@ def call(){
 			stage('Pipeline') {
 				steps {
 					println "Pipeline"
-					script{	
+					script{
+						def addStage(stagesStr,map){
+							def stagesList = stagesStr.split(',')
+							for(int i = 0;i<stagesList.length;i++){
+								def stage = map.find { it.value.name == stagesList[i]}
+								if(stage!=null){
+									if(!stgsToProc.containsKey(stage.key)){
+										stgsToProc.put(stage.key,stage.value)
+										if(stage.value.dependencies!=null)
+											addStage(stage.value.dependencies)
+									}
+									else{
+										STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
+										exit 0
+									}
+								}
+								else{
+									STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
+									exit 0
+								}
+							}
+						}
+
+						def runGradleStages(stages){
+							map = gradleMap
+							addStage(stages)
+							def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
+							keyS.each {
+								def stageName = stgsToProc.get(it).name
+								switch(stageName) {
+									case "build":
+										println "g build: ${stageName}"
+										break
+									case "sonar":
+										println "g sonar: ${stageName}"
+										break
+									case "run":
+										println "g run: ${stageName}"
+										break
+									case "testapp":
+										println "g testapp: ${stageName}"
+										break
+									case "nexus":
+										println "g nexus: ${stageName}"
+										break
+									default:
+										STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
+										println STAGE_ERR_MSG
+										break
+								}
+							}
+						}
+
+						def runMavenStages(stages){
+							map = mavenMap
+							addStage(stages)
+							def keyS = stgsToProc.sort { a, b -> a.value.priority <=> b.value.priority }.keySet()
+							keyS.each {
+								def stageName = stgsToProc.get(it).name
+								switch(stageName) {
+									case "build":
+										println "m build: ${stageName}"
+										break
+									case "sonar":
+										println "m sonar: ${stageName}"
+										break
+									case "run":
+										println "m run: ${stageName}"
+										break
+									case "testapp":
+										println "m testapp: ${stageName}"
+										break
+									case "nexus":
+										println "m nexus: ${stageName}"
+										break
+									default:
+										STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
+										println STAGE_ERR_MSG
+										break
+								}
+							}
+						}
 						stgsToProc = [:]
 						if (params.buildTool == 'gradle'){
 							if(params.stages == ''){
