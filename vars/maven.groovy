@@ -121,6 +121,7 @@ def runMavenStages(stages){
 			   5:[name:'run', priority:5, dependencies:'package'],
 			   6:[name:'testapp', priority:0, dependencies:'run'],
 			   7:[name:'nexus', priority:7, dependencies:'package']]
+	stgsToProc = [:]
 	addStage(stages,map,stgsToProc)
 	def aux = stgsToProc.sort()
 	def keyS = aux.keySet()
@@ -129,31 +130,31 @@ def runMavenStages(stages){
 		switch(stageName) {
 			case "build":
 				println "m build: ${stageName}"
-				//stageBuild()
+				stageBuild()
 				break
 			case "test":
 				println "m test: ${stageName}"
-				//stageTest()
+				stageTest()
 				break
 			case "package":
 				println "m package: ${stageName}"
-				//stagePackage()
+				stagePackage()
 				break
 			case "sonar":
 				println "m sonar: ${stageName}"
-				//stageSonar()
+				stageSonar()
 				break
 			case "run":
 				println "m run: ${stageName}"
-				//stageRun()
+				stageRun()
 				break
 			case "testapp":
 				println "m testapp: ${stageName}"
-				//stageTestApp()
+				stageTestApp()
 				break
 			case "nexus":
 				println "m nexus: ${stageName}"
-				//stageNexus()
+				stageNexus()
 				break
 			default:
 				STAGE_ERR_MSG = "Stage no válida: ${stagesList[i]}"
