@@ -59,7 +59,7 @@ def call(){
 											   3:[name:'run', priority:3, dependencies:'build'],
 											   4:[name:'testapp', priority:4, dependencies:'run'],
 											   5:[name:'nexus', priority:5, dependencies:'build']]
-								runGradleStages(params.stages,gradleMap)
+								gradle.runGradleStages(params.stages,gradleMap)
 							}
 						}
 						else{
@@ -74,7 +74,7 @@ def call(){
 											   5:[name:'nexus', priority:5, dependencies:'build'],
 											   6:[name:'testapp', priority:4, dependencies:'run'],
 											   7:[name:'nexus', priority:5, dependencies:'build']]
-								runMavenStages(params.stages,mavenMap)
+								maven.runMavenStages(params.stages,mavenMap)
 							}
 						}
 					}
