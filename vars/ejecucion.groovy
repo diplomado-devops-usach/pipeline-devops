@@ -6,9 +6,7 @@
 	ejecucion.call()
 
 */
-def call(String plType){
-	
-	figlet plType
+def call(){
   
 	pipeline {
 		agent any
@@ -31,20 +29,20 @@ def call(String plType){
 						stgsToProc = [:]
 						if (params.buildTool == 'gradle'){
 							if(params.stages == ''){
-								gradle(verifyBranchName())
+								gradle()
 							}
 							else{
 								println("ejecucion: " + params.stages)
-								gradle.runGradleStages(params.stages, verifyBranchName())
+								gradle.runGradleStages(params.stages)
 							}
 						}
 						else{
 							if(params.stages == ''){
-								maven(verifyBranchName())
+								maven()
 							}
 							else{
 								println("ejecucion: " + params.stages)
-								maven.runMavenStages(params.stages, verifyBranchName())
+								maven.runMavenStages(params.stages)
 							}
 						}
 					}
@@ -59,15 +57,6 @@ def call(String plType){
 				slackSend color: '#00FF00', message: "${env.USER} | ${env.JOB_NAME} | ${env.buildTool} | Ejecución exitosa. Para obtener más detalles vaya a ${env.BUILD_URL}"
 			}
 		}
-	}
-}
-
-def verifyBranchName(){
-	if(env.GIT_BRANCH.contains('feature-') || env.GIT_BRANCH.contains('develop')){
-		return "CI"
-	}
-	else{
-		return "CD"
 	}
 }
 

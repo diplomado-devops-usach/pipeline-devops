@@ -4,7 +4,7 @@
 	ejecucion.call()
 */
 
-def call(String plType){
+def call(){
 	
 	figlet plType
   
@@ -118,6 +118,7 @@ def stageNexus(){
 }
 
 def runGradleStages(stages){
+	figlet verifyBranchName()
 	println(stages)
 	def map = [1:[name:'build', priority:1, dependencies:null],
 			   2:[name:'sonar', priority:2, dependencies:'build'],
@@ -178,6 +179,15 @@ def addStage(stagesStr,map,stgMap){
 			println STAGE_ERR_MSG
 			return 0
 		}
+	}
+}
+
+def verifyBranchName(){
+	if(env.GIT_BRANCH.contains('feature-') || env.GIT_BRANCH.contains('develop')){
+		return "CI"
+	}
+	else{
+		return "CD"
 	}
 }
 

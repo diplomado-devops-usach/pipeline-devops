@@ -4,10 +4,10 @@
 	ejecucion.call()
 */
 
-def call(String plType){
+def call(){
 	
-	figlet plType
-
+	figlet verifyBranchName()
+	println(stages)
 	stage('Compile') {
 		STAGE = env.STAGE_NAME
 		println "Stage: ${env.STAGE_NAME}"
@@ -117,6 +117,7 @@ def stageNexus(){
 }
 
 def runMavenStages(stages){
+	figlet verifyBranchName()
 	def map = [1:[name:'build', priority:1, dependencies:null],
 			   2:[name:'test', priority:2, dependencies:'build'],
 			   3:[name:'package', priority:3, dependencies:'build'],
@@ -186,6 +187,15 @@ def addStage(stagesStr,map,stgMap){
 			println STAGE_ERR_MSG
 			return 0
 		}
+	}
+}
+
+def verifyBranchName(){
+	if(env.GIT_BRANCH.contains('feature-') || env.GIT_BRANCH.contains('develop')){
+		return "CI"
+	}
+	else{
+		return "CD"
 	}
 }
 
