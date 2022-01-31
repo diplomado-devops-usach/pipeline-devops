@@ -4,7 +4,9 @@
 	ejecucion.call()
 */
 
-def call(){
+def call(String plType){
+	
+	figlet plType
 
 	stage('Compile') {
 		STAGE = env.STAGE_NAME
