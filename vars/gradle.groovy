@@ -5,9 +5,9 @@
 */
 
 def call(){
-	
+	figlet "gradle"
 	figlet plType
-  
+	println(stages)
 	stage('Build & Unit Test') {
 		STAGE = env.STAGE_NAME
 		println "Stage: ${env.STAGE_NAME}"

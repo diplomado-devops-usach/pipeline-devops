@@ -27,6 +27,7 @@ def call(){
 					println "Pipeline"
 					script{
 						stgsToProc = [:]
+						figlet verifyBranchName()
 						if (params.buildTool == 'gradle'){
 							if(params.stages == ''){
 								gradle()
@@ -57,6 +58,15 @@ def call(){
 				slackSend color: '#00FF00', message: "${env.USER} | ${env.JOB_NAME} | ${env.buildTool} | Ejecución exitosa. Para obtener más detalles vaya a ${env.BUILD_URL}"
 			}
 		}
+	}
+}
+
+def verifyBranchName(){
+	if(env.GIT_BRANCH.contains('feature-') || env.GIT_BRANCH.contains('develop')){
+		return "CI"
+	}
+	else{
+		return "CD"
 	}
 }
 

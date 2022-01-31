@@ -5,8 +5,8 @@
 */
 
 def call(){
-	
-	figlet verifyBranchName()
+	figlet "gradle"
+	figlet plType
 	println(stages)
 	stage('Compile') {
 		STAGE = env.STAGE_NAME
