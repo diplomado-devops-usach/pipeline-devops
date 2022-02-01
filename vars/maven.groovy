@@ -119,7 +119,7 @@ def stageDownloadNexus(){
 	stage('DownloadNexus') {
 		STAGE = env.STAGE_NAME
 		figlet "Stage: ${env.STAGE_NAME}"
-		sh "curl -X GET 'http://localhost:8082/rest/mscovid/test?msg=testing'"
+		sh "curl -X GET 'http://localhost:8081/repository/test-nexus/com/devopsusach2020/DevOpsUsach2020/0.1.0/DevOpsUsach2020-0.1.0.jar' -o ${env.WORKSPACE}/DevOpsUsach2020-0.1.0.jar"
 	}
 }
 
