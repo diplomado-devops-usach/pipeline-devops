@@ -152,8 +152,8 @@ def stageRunDownloadedJar(){
 	stage('Run') {
 		STAGE = env.STAGE_NAME
 		figlet "Stage: ${env.STAGE_NAME}"
-		sh "gradle bootRun &"
-		sleep 20
+		sh "java -jar ${env.WORKSPACE}/DevOpsUsach2020-0.1.0.jar &"
+		sleep 30
 	}
 }
 

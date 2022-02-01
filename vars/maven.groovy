@@ -98,6 +98,15 @@ def stageRun(){
 	}
 }
 
+def stageRunDownloadedJar(){
+	stage('Run') {
+		STAGE = env.STAGE_NAME
+		figlet "Stage: ${env.STAGE_NAME}"
+		sh "java -jar ${env.WORKSPACE}/DevOpsUsach2020-0.1.0.jar &"
+		sleep 30
+	}
+}
+
 def stageTestApp(){
 	stage('TestApp') {
 		STAGE = env.STAGE_NAME
@@ -124,11 +133,25 @@ def stageNexus(){
 }
 
 def stageNexusCD(){
-	stage('NexusCD') {
+	stage('Nexus') {
 		STAGE = env.STAGE_NAME
 		figlet "Stage: ${env.STAGE_NAME}"
-		println "${env.WORKSPACE}/DevOpsUsach2020-0.0.1.jar"
-		nexusArtifactUploader artifacts: [[artifactId: 'DevOpsUsach2020', classifier: '', file: "${env.WORKSPACE}/DevOpsUsach2020-0.0.1.jar", type: 'jar']], credentialsId: 'nexus-taller10', groupId: 'com.devopsusach2020', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'test-nexus', version: '0.0.1'
+		nexusPublisher nexusInstanceId: 'nexus-server',
+		nexusRepositoryId: 'test-nexus',
+		packages: [
+			[
+				$class: 'MavenPackage',
+				mavenAssetList: [
+					[classifier: '', extension: '', filePath: "${env.WORKSPACE}/DevOpsUsach2020-0.1.0.jar"]
+				],
+				mavenCoordinate: [
+					artifactId: 'DevOpsUsach2020',
+					groupId: 'com.devopsusach2020',
+					packaging: 'jar',
+					version: '1.0.0'
+				]
+			]
+		]
 	}
 }
 
