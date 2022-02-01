@@ -6,7 +6,6 @@
 
 def call(){
 	figlet "gradle"
-	figlet plType
 	println(stages)
 	stage('Compile') {
 		STAGE = env.STAGE_NAME
@@ -99,8 +98,25 @@ def stageRun(){
 	}
 }
 
+def stageRun(){
+	stage('Run') {
+		STAGE = env.STAGE_NAME
+		println "Stage: ${env.STAGE_NAME}"
+		sh 'mvn spring-boot:run &'
+		sleep 20
+	}
+}
+
 def stageTestApp(){
 	stage('TestApp') {
+		STAGE = env.STAGE_NAME
+		println "Stage: ${env.STAGE_NAME}"
+		sh "curl -X GET 'http://localhost:8082/rest/mscovid/test?msg=testing'"
+	}
+}
+
+def stageDownloadNexus(){
+	stage('DownloadNexus') {
 		STAGE = env.STAGE_NAME
 		println "Stage: ${env.STAGE_NAME}"
 		sh "curl -X GET 'http://localhost:8082/rest/mscovid/test?msg=testing'"
@@ -113,6 +129,15 @@ def stageNexus(){
 		println "Stage: ${env.STAGE_NAME}"
 		println "${env.WORKSPACE}/build/DevOpsUsach2020-0.0.1.jar"
 		nexusArtifactUploader artifacts: [[artifactId: 'DevOpsUsach2020', classifier: '', file: "${env.WORKSPACE}/build/DevOpsUsach2020-0.0.1.jar", type: 'jar']], credentialsId: 'nexus-taller10', groupId: 'com.devopsusach2020', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'test-nexus', version: '0.0.1'
+	}
+}
+
+def stageNexusCD(){
+	stage('NexusCD') {
+		STAGE = env.STAGE_NAME
+		println "Stage: ${env.STAGE_NAME}"
+		println "${env.WORKSPACE}/DevOpsUsach2020-0.0.1.jar"
+		nexusArtifactUploader artifacts: [[artifactId: 'DevOpsUsach2020', classifier: '', file: "${env.WORKSPACE}/DevOpsUsach2020-0.0.1.jar", type: 'jar']], credentialsId: 'nexus-taller10', groupId: 'com.devopsusach2020', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'test-nexus', version: '0.0.1'
 	}
 }
 
@@ -190,13 +215,23 @@ def addStage(stagesStr,map,stgMap){
 	}
 }
 
-def verifyBranchName(){
-	if(env.GIT_BRANCH.contains('feature-') || env.GIT_BRANCH.contains('develop')){
-		return "CI"
-	}
-	else{
-		return "CD"
-	}
+def runCI(){
+	figlet "Integración Continua"
+	stageBuild()
+	stageTest()
+	stagePackage()
+	stageSonar()
+	stageRun()
+	stageTestApp()
+	stageNexus()
+}
+
+def runCD(){
+	figlet "Entrega Continua"
+	stageDownloadNexus()
+	stageRunDownloadedJar()
+	stageTestApp()
+	stageNexusCD()
 }
 
 return this;

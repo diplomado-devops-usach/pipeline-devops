@@ -30,6 +30,7 @@ def call(){
 						def ci_or_cd = verifyBranchName()
 						figlet ci_or_cd
 						if (params.buildTool == 'gradle'){
+							figlet "grandle"
 							if(ci_or_cd == 'CI'){
 								gradle.runCI()
 							}
@@ -38,6 +39,7 @@ def call(){
 							}
 						}
 						else{
+							figlet "maven"
 							if(ci_or_cd == 'CI'){
 								maven.runCI()
 							}

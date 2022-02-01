@@ -97,7 +97,7 @@ def stageTestApp(){
 def stageNexus(){
 	stage('Nexus') {
 		STAGE = env.STAGE_NAME
-		figlets "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		nexusPublisher nexusInstanceId: 'nexus-server',
 		nexusRepositoryId: 'test-nexus',
 		packages: [
@@ -120,7 +120,7 @@ def stageNexus(){
 def stageNexusCD(){
 	stage('Nexus') {
 		STAGE = env.STAGE_NAME
-		figlets "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		nexusPublisher nexusInstanceId: 'nexus-server',
 		nexusRepositoryId: 'test-nexus',
 		packages: [
