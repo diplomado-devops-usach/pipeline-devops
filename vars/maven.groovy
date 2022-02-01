@@ -9,25 +9,25 @@ def call(){
 	println(stages)
 	stage('Compile') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh 'mvn clean compile -e'
 	}
 
 	stage('Test') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh 'mvn clean test -e'
 	}
 
 	stage('Package') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh 'mvn clean package -e'
 	}
 
 	stage('Sonar') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		def scannerHome = tool 'sonar-scanner';
 		withSonarQubeEnv('sonar-server') {
 			sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ejemplo-maven -Dsonar.sources=src -Dsonar.java.binaries=build"
@@ -36,20 +36,20 @@ def call(){
 
 	stage('Run') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh 'mvn spring-boot:run &'
 		sleep 20
 	}
 
 	stage('TestApp') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh "curl -X GET 'http://localhost:8082/rest/mscovid/test?msg=testing'"
 	}
 
 	stage('uploadNexus') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		nexusArtifactUploader artifacts: [[artifactId: 'DevOpsUsach2020', classifier: '', file: '/diplomado/modulo3/ejemplo-maven/build/DevOpsUsach2020-0.0.1.jar', type: 'jar']], credentialsId: 'nexus-taller10', groupId: 'com.devopsusach2020', nexusUrl: 'f5dd-200-126-115-114.ngrok.io', nexusVersion: 'nexus3', protocol: 'http', repository: 'test-nexus', version: '0.0.1'
 	}
 }
@@ -57,7 +57,7 @@ def call(){
 def stageBuild(){
 	stage('Compile') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh 'mvn clean compile -e'
 	}
 }
@@ -65,7 +65,7 @@ def stageBuild(){
 def stagePackage(){
 	stage('Package') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh 'mvn clean package -e'
 	}
 }
@@ -73,7 +73,7 @@ def stagePackage(){
 def stageSonar(){
 	stage('Sonar') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		def scannerHome = tool 'sonar-scanner';
 		withSonarQubeEnv('sonar-server') {
 			sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ejemplo-maven -Dsonar.sources=src -Dsonar.java.binaries=build"
@@ -84,7 +84,7 @@ def stageSonar(){
 def stageTest(){
 	stage('Test') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh 'mvn clean test -e'
 	}
 }
@@ -92,16 +92,7 @@ def stageTest(){
 def stageRun(){
 	stage('Run') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
-		sh 'mvn spring-boot:run &'
-		sleep 20
-	}
-}
-
-def stageRun(){
-	stage('Run') {
-		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh 'mvn spring-boot:run &'
 		sleep 20
 	}
@@ -110,7 +101,7 @@ def stageRun(){
 def stageTestApp(){
 	stage('TestApp') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh "curl -X GET 'http://localhost:8082/rest/mscovid/test?msg=testing'"
 	}
 }
@@ -118,7 +109,7 @@ def stageTestApp(){
 def stageDownloadNexus(){
 	stage('DownloadNexus') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh "curl -X GET 'http://localhost:8082/rest/mscovid/test?msg=testing'"
 	}
 }
@@ -126,7 +117,7 @@ def stageDownloadNexus(){
 def stageNexus(){
 	stage('uploadNexus') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		println "${env.WORKSPACE}/build/DevOpsUsach2020-0.0.1.jar"
 		nexusArtifactUploader artifacts: [[artifactId: 'DevOpsUsach2020', classifier: '', file: "${env.WORKSPACE}/build/DevOpsUsach2020-0.0.1.jar", type: 'jar']], credentialsId: 'nexus-taller10', groupId: 'com.devopsusach2020', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'test-nexus', version: '0.0.1'
 	}
@@ -135,7 +126,7 @@ def stageNexus(){
 def stageNexusCD(){
 	stage('NexusCD') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		println "${env.WORKSPACE}/DevOpsUsach2020-0.0.1.jar"
 		nexusArtifactUploader artifacts: [[artifactId: 'DevOpsUsach2020', classifier: '', file: "${env.WORKSPACE}/DevOpsUsach2020-0.0.1.jar", type: 'jar']], credentialsId: 'nexus-taller10', groupId: 'com.devopsusach2020', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'test-nexus', version: '0.0.1'
 	}
