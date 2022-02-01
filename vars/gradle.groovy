@@ -10,13 +10,13 @@ def call(){
 	println(stages)
 	stage('Build & Unit Test') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh "gradle build"
 	}
 	
 	stage('Sonar') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		def scannerHome = tool 'sonar-scanner';
 		withSonarQubeEnv('sonar-server') {
 			sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ejemplo-gradle-staller14 -Dsonar.sources=src -Dsonar.java.binaries=build"
@@ -25,20 +25,20 @@ def call(){
 	
 	stage('Run') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh "gradle bootRun &"
 		sleep 20
 	}
 
 	stage('TestApp') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh "curl -X GET 'http://localhost:8082/rest/mscovid/test?msg=testing'"
 	}
 
 	stage('Nexus') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		nexusPublisher nexusInstanceId: 'nexus-server',
 		nexusRepositoryId: 'test-nexus',
 		packages: [
@@ -61,7 +61,7 @@ def call(){
 def stageBuild(){
 	stage('Build & Unit Test') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh "gradle build"
 	}
 }
@@ -69,7 +69,7 @@ def stageBuild(){
 def stageSonar(){
 	stage('Sonar') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		def scannerHome = tool 'sonar-scanner';
 		withSonarQubeEnv('sonar-server') {
 			sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ejemplo-gradle-staller14 -Dsonar.sources=src -Dsonar.java.binaries=build"
@@ -80,7 +80,7 @@ def stageSonar(){
 def stageRun(){
 	stage('Run') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh "gradle bootRun &"
 		sleep 20
 	}
@@ -89,7 +89,7 @@ def stageRun(){
 def stageTestApp(){
 	stage('TestApp') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlet "Stage: ${env.STAGE_NAME}"
 		sh "curl -X GET 'http://localhost:8082/rest/mscovid/test?msg=testing'"
 	}
 }
@@ -97,7 +97,7 @@ def stageTestApp(){
 def stageNexus(){
 	stage('Nexus') {
 		STAGE = env.STAGE_NAME
-		println "Stage: ${env.STAGE_NAME}"
+		figlets "Stage: ${env.STAGE_NAME}"
 		nexusPublisher nexusInstanceId: 'nexus-server',
 		nexusRepositoryId: 'test-nexus',
 		packages: [
@@ -110,16 +110,54 @@ def stageNexus(){
 					artifactId: 'DevOpsUsach2020',
 					groupId: 'com.devopsusach2020',
 					packaging: 'jar',
-					version: '0.0.1'
+					version: '0.1.0'
 				]
 			]
 		]
 	}
 }
 
+def stageNexusCD(){
+	stage('Nexus') {
+		STAGE = env.STAGE_NAME
+		figlets "Stage: ${env.STAGE_NAME}"
+		nexusPublisher nexusInstanceId: 'nexus-server',
+		nexusRepositoryId: 'test-nexus',
+		packages: [
+			[
+				$class: 'MavenPackage',
+				mavenAssetList: [
+					[classifier: '', extension: '', filePath: "${env.WORKSPACE}/DevOpsUsach2020-1.0.0.jar"]
+				],
+				mavenCoordinate: [
+					artifactId: 'DevOpsUsach2020',
+					groupId: 'com.devopsusach2020',
+					packaging: 'jar',
+					version: '1.0.0'
+				]
+			]
+		]
+	}
+}
+
+def stageDownloadNexus(){
+	stage('DownloadNexus') {
+		STAGE = env.STAGE_NAME
+		figlet "Stage: ${env.STAGE_NAME}"
+		sh "curl -X GET 'http://localhost:8082/rest/mscovid/test?msg=testing'"
+	}
+}
+
+def stageRunDownloadedJar(){
+	stage('Run') {
+		STAGE = env.STAGE_NAME
+		figlet "Stage: ${env.STAGE_NAME}"
+		sh "gradle bootRun &"
+		sleep 20
+	}
+}
+
 def runGradleStages(stages){
-	figlet verifyBranchName()
-	println(stages)
 	def map = [1:[name:'build', priority:1, dependencies:null],
 			   2:[name:'sonar', priority:2, dependencies:'build'],
 			   3:[name:'run', priority:3, dependencies:'build'],
@@ -182,13 +220,21 @@ def addStage(stagesStr,map,stgMap){
 	}
 }
 
-def verifyBranchName(){
-	if(env.GIT_BRANCH.contains('feature-') || env.GIT_BRANCH.contains('develop')){
-		return "CI"
-	}
-	else{
-		return "CD"
-	}
+def runCI(){
+	figlet "CI"
+	stageBuild()
+	stageSonar()
+	stageRun()
+	stageTestApp()
+	stageNexus()
+}
+
+def runCD(){
+	figlet "CD"
+	stageDownloadNexus()
+	stageRunDownloadedJar()
+	stageTestApp()
+	stageNexusCD()
 }
 
 return this;

@@ -27,23 +27,22 @@ def call(){
 					println "Pipeline"
 					script{
 						stgsToProc = [:]
-						figlet verifyBranchName()
+						def ci_or_cd = verifyBranchName()
+						figlet ci_or_cd
 						if (params.buildTool == 'gradle'){
-							if(params.stages == ''){
-								gradle()
+							if(ci_or_cd == 'CI'){
+								gradle.runCI()
 							}
 							else{
-								println("ejecucion: " + params.stages)
-								gradle.runGradleStages(params.stages)
+								gradle.runCD()
 							}
 						}
 						else{
-							if(params.stages == ''){
-								maven()
+							if(ci_or_cd == 'CI'){
+								maven.runCI()
 							}
 							else{
-								println("ejecucion: " + params.stages)
-								maven.runMavenStages(params.stages)
+								maven.runCD()
 							}
 						}
 					}
